@@ -21,7 +21,7 @@ axios.interceptors.response.use(
 );
 
 
-const getAuthHeaders = async () => {
+const getAuthHeaders = () => {
     const token = localStorage.getItem('access_token');
 
     if (!token) {
