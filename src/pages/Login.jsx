@@ -1,44 +1,97 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { login } from '../services/authService';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
-    const [form, setForm] = useState({ username: '', password: '' });
-    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleChange = event => {
-        setForm({ ...form, [event.target.name]: event.target.value });
-    };
+    const [form, setForm] = useState({ username: '', password: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [invalidFields, setInvalidFields] = useState({});
+    const [touchedFields, setTouchedFields] = useState({});
+
+    const handleChange = event => setForm({ ...form, [event.target.name]: event.target.value });
+
+    const handleBlur = event => setTouchedFields({ ...touchedFields, [event.target.name]: true });
+
 
     const handleSubmit = async event => {
+        event.preventDefault();
+
+        if (Object.keys(invalidFields).length) return;
+        setIsSubmitting(true);
+
         try {
-            event.preventDefault();
-            const data = await login(form);
-            console.log('Tokens:', data);
+            await login(form);
+            navigate('/');
         } catch (error) {
-            setError('Error logging in. Please try again.');
+            setErrorMessage(error.message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
-    return (
+
+    const isFormInvalid = () => {
+        if (Object.keys(form).length) {
+            const validations = {};
+
+            if (!form.username?.trim()) {
+                validations.username = 'Username is required';
+            }
+
+            if (!form.password) {
+                validations.password = 'Password is required';
+            }
+
+            setInvalidFields(validations);
+        }
+    };
+
+    useEffect(isFormInvalid, [form]);
+
+    return <>
+        {errorMessage && (
+            <div>{errorMessage}</div>
+        )}
         <form onSubmit={handleSubmit}>
             <input
                 type="text"
                 name="username"
+                className={`form-control ${touchedFields.password && invalidFields.password ? 'is-invalid' : ''}`}
                 placeholder="Username"
                 onChange={handleChange}
+                onBlur={handleBlur}
                 value={form.username}
+                required
+
             />
             <input
                 type="password"
                 name="password"
+                className={`form-control ${touchedFields.password && invalidFields.password ? 'is-invalid' : ''}`}
                 placeholder="Password"
                 onChange={handleChange}
+                onBlur={handleBlur}
                 value={form.password}
+                required
+
             />
-            <button type="submit">Login</button>
-            {error && <p>{error}</p>}
+            {touchedFields.password && invalidFields.password && (
+                <div className="invalid-feedback">{invalidFields.password}</div>
+            )}
+            <div>
+                <button
+                    type="submit"
+                    disabled={Object.keys(invalidFields).length || isSubmitting}
+                >
+                    {isSubmitting ? 'Signing in...' : 'Sign In'}
+                </button>
+                <Link to="/">Cancel</Link>
+            </div>
         </form>
-    );
+    </>;
 }
 
 export default Login;
