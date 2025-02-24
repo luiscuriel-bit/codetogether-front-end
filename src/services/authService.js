@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const API_URL = `${import.meta.env.VITE_DJANGO_BACKEND_URL}/api`;
+
 axios.interceptors.response.use(
     response => response,
     async error => {
@@ -18,22 +20,18 @@ axios.interceptors.response.use(
     }
 );
 
-const API_URL = `${import.meta.env.VITE_DJANGO_BACKEND_URL}/api`;
 
-const getAuthHeaders = () => ({
-    headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
-});
+const getAuthHeaders = async () => {
+    const token = localStorage.getItem('access_token');
 
-const login = async credentials => {
-    try {
-        const response = await axios.post(`${API_URL}/token/`, credentials);
-        localStorage.setItem('access_token', response.data.access);
-        localStorage.setItem('refresh_token', response.data.refresh);
-        return response.data;
-    } catch (error) {
-        console.error('Error logging in:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.detail || 'Login failed');
+    if (!token) {
+        console.error("No access token found.");
+        return null;
     }
+
+    return {
+        headers: { Authorization: `Bearer ${token}` },
+    };
 };
 
 const refreshToken = async () => {
@@ -50,6 +48,19 @@ const refreshToken = async () => {
         return null;
     }
 };
+
+const login = async credentials => {
+    try {
+        const response = await axios.post(`${API_URL}/token/`, credentials);
+        localStorage.setItem('access_token', response.data.access);
+        localStorage.setItem('refresh_token', response.data.refresh);
+        return response.data;
+    } catch (error) {
+        console.error('Error logging in:', error.response?.data || error.message);
+        throw new Error(error.response?.data?.detail || 'Login failed');
+    }
+};
+
 
 const signup = async formData => {
     try {
@@ -72,7 +83,9 @@ const logout = () => {
 
 const getUser = async userId => {
     try {
-        const response = await axios.get(`${API_URL}/users/${userId}/`, getAuthHeaders());
+        const headers = await getAuthHeaders();
+        if (!headers) return null;
+        const response = await axios.get(`${API_URL}/users/${userId}/`, headers);
         return response.data;
     } catch (error) {
         console.error('Error fetching user:', error.response?.data || error.message);
@@ -80,9 +93,9 @@ const getUser = async userId => {
     }
 };
 
-const updateUser = async (userId, formData) => {
+const updateUser = async (userId, updatedData) => {
     try {
-        const updatedUser = await axios.patch(`${API_URL}/users/${userId}/`, formData, getAuthHeaders());
+        const updatedUser = await axios.patch(`${API_URL}/users/${userId}/`, updatedData, getAuthHeaders());
         return updatedUser.data;
     } catch (error) {
         console.error('Error updating user:', error.response?.data || error.message);
