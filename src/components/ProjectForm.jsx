@@ -1,10 +1,10 @@
+
 import { useState } from 'react';
-import axios from 'axios';
 import { createProject } from '../services/projectService';
 
 function ProjectForm({ setProject }) {
     const [form, setForm] = useState({ name: '', description: '' });
-    const [error, setError] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleChange = event => {
         setForm({ ...form, [event.target.name]: event.target.value });
@@ -13,16 +13,20 @@ function ProjectForm({ setProject }) {
     const handleSubmit = async event => {
         try {
             event.preventDefault();
-            setError(null)
+            setErrorMessage(null)
             const data = await createProject(form);
             setProject(data);
             setForm({ name: '', description: '' });
         } catch (error) {
-            setError('Error creating project. Please try again.');
+            setErrorMessage('Error creating project. Please try again.');
         }
     };
 
-    return (
+
+    return <>
+        {errorMessage && (
+            <div>{errorMessage}</div>
+        )}
         <form onSubmit={handleSubmit}>
             <input
                 type="text"
@@ -39,9 +43,9 @@ function ProjectForm({ setProject }) {
                 value={form.description}
             />
             <button type="submit">Create Project</button>
-            {error && <p>{error}</p>}
+            {errorMessage && <p>{errorMessage}</p>}
         </form>
-    );
+    </>;
 }
 
 export default ProjectForm;
