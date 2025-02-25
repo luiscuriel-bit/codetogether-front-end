@@ -8,6 +8,7 @@ import * as authService from './services/authService';
 import { createContext, useEffect, useState } from 'react';
 import ProjectDetail from './components/ProjectDetail';
 import NavBar from './components/NavBar';
+import CodeEditor from './components/CodeEditor';
 
 export const AuthedUserContext = createContext(null);
 
@@ -55,10 +56,11 @@ function App() {
                     <>
                         <Route path="/projects" element={<Projects />} />
                         <Route path="/projects/new" element={<ProjectForm />} />
-                        <Route path="/projects/:id" element={<ProjectDetail />} />
+                        <Route path="/projects/:id" element={<ProjectDetail token={token} />} />
+                        <Route path="/projects/:id/edit" element={<CodeEditor token={token} />} />
                     </>
                 ) : (
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/login" element={<Login setToken={setToken} />} />
                 )}
                 <Route path="/" element={<Home />} />
             </Routes>

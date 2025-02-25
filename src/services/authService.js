@@ -18,7 +18,7 @@ axios.interceptors.response.use(
     }
 );
 
-const API_URL = `${import.meta.env.VITE_DJANGO_BACKEND_URL}/api`;
+const API_URL = `http://${import.meta.env.VITE_DJANGO_BACKEND_URL}/api`;
 
 const getAuthHeaders = () => ({
     headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },

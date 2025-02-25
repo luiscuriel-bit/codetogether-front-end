@@ -38,7 +38,7 @@ function ProjectForm({ setProject }) {
             <input
                 type="text"
                 name="description"
-                placeholder="Project Description"
+                placeholder="Code"
                 onChange={handleChange}
                 value={form.description}
             />
