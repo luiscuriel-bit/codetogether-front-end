@@ -5,7 +5,12 @@ import Projects from './pages/Projects'
 import ProjectForm from './components/ProjectForm';
 import * as projectService from './services/projectService';
 import * as authService from './services/authService';
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
+import ProjectDetail from './components/ProjectDetail';
+import NavBar from './components/NavBar';
+import CodeEditor from './components/CodeEditor';
+
+export const AuthedUserContext = createContext(null);
 
 function App() {
     const navigate = useNavigate();
@@ -14,7 +19,12 @@ function App() {
     const [projects, setProjects] = useState([]);
 
     useEffect(() => {
-        
+        const savedToken = localStorage.getItem("access_token");
+        if (savedToken) setToken(savedToken);
+    }, []);
+
+
+    useEffect(() => {
         const fetchUserProjects = async () => {
             try {
                 const projectsData = await projectService.fetchProjects();
@@ -28,24 +38,36 @@ function App() {
 
     const handleAddProject = async projectFormData => {
         const newProject = await projectService.createProject(projectFormData);
-        setProjects([...Projects, newProject]);
+        setProjects([...projects, newProject]);
         navigate('/projects');
     };
 
     const handleLogout = () => {
-		authService.logout();
-		setToken(null);
-	};
+        authService.logout();
+        setToken(null);
+        navigate('/');
+    };
 
-    return (
-        <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/projects' element={<Projects projects={projects} />} />
-            <Route path='/projects/new' element={<ProjectForm handleAddProject={handleAddProject} />} />
-        </Routes>
+    return <>
+        <AuthedUserContext.Provider value={token}>
+            {token && <NavBar handleLogout={handleLogout} />}
+            <Routes>
+                {token ? (
+                    <>
+                        <Route path="/projects" element={<Projects />} />
+                        <Route path="/projects/new" element={<ProjectForm />} />
+                        <Route path="/projects/:id" element={<ProjectDetail token={token} />} />
+                        <Route path="/projects/:id/edit" element={<CodeEditor token={token} />} />
+                    </>
+                ) : (
+                    <Route path="/login" element={<Login setToken={setToken} />} />
+                )}
+                <Route path="/" element={<Home />} />
+            </Routes>
+        </AuthedUserContext.Provider>
 
-    );
+
+    </>;
 }
 
 export default App;

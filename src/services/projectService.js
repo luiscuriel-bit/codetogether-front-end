@@ -1,7 +1,7 @@
 import axios from "axios";
 import { logout } from "./authService";
 
-const API_URL = `${import.meta.env.VITE_DJANGO_BACKEND_URL}/api`;
+const API_URL = `http://${import.meta.env.VITE_DJANGO_BACKEND_URL}/api`;
 
 
 axios.interceptors.response.use(
@@ -63,6 +63,11 @@ const fetchProjects = async () => {
     }
 };
 
+const fetchProjectById = async id => {
+    const response = await axios.get(`${API_URL}/projects/${id}`, getAuthHeaders());
+    return response.data;
+};
+
 const createProject = async projectData => {
     try {
         const headers = await getAuthHeaders();
@@ -115,8 +120,10 @@ const fetchProjectById = async (projectId) => {
     }
 };
 
+
 export {
     fetchProjects,
+    fetchProjectById,
     createProject,
     updateProject,
     deleteProject,

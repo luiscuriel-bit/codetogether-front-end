@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { login } from '../services/authService';
 import { Link, useNavigate } from 'react-router-dom';
+import ErrorMessage from '../components/ErrorMessage';
 
-function Login() {
+function Login({ setToken }) {
     const navigate = useNavigate();
 
     const [form, setForm] = useState({ username: '', password: '' });
@@ -23,8 +24,14 @@ function Login() {
         setIsSubmitting(true);
 
         try {
-            await login(form);
-            navigate('/');
+            const userData = await login(form);
+            if (userData) {
+                setToken(userData);
+                navigate('/projects')
+            }
+            else {
+                setErrorMessage('Wrong credentials')
+            }
         } catch (error) {
             setErrorMessage(error.message);
         } finally {
@@ -52,9 +59,7 @@ function Login() {
     useEffect(isFormInvalid, [form]);
 
     return <>
-        {errorMessage && (
-            <div>{errorMessage}</div>
-        )}
+        {errorMessage && <ErrorMessage message={errorMessage} />}
         <form onSubmit={handleSubmit}>
             <input
                 type="text"

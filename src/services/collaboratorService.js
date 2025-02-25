@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/api/projects/";
+const API_URL = "http://localhost:8000/api";
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('access_token');
@@ -11,12 +11,13 @@ const getAuthHeaders = () => {
     return { headers: { Authorization: `Bearer ${token}` } };
 };
 
-const addCollaborator = async (projectId, userData) => {
+const addCollaborator = async (userData) => {
     try {
         const headers = getAuthHeaders();
         if (!headers) return null;
 
-        const response = await axios.post(`${API_URL}${projectId}/collaborators/`, userData, headers);
+        const response = await axios.post(`${API_URL}/collaborators/${userData.projectId}/add_collaborator/`, userData, headers);
+
         return response.data;
     } catch (error) {
         console.error("Error adding collaborator:", error.response?.data || error.message);
@@ -29,7 +30,8 @@ const removeCollaborator = async (projectId, userId) => {
         const headers = getAuthHeaders();
         if (!headers) return null;
 
-        await axios.delete(`${API_URL}${projectId}/collaborators/${userId}/`, headers);
+        await axios.delete(`${API_URL}/collaborators/${userData.projectId}/remove_collaborator/`, headers);
+
         return true;
     } catch (error) {
         console.error("Error removing collaborator:", error.response?.data || error.message);
@@ -37,12 +39,14 @@ const removeCollaborator = async (projectId, userId) => {
     }
 };
 
-const getCollaborators = async (projectId) => {
+const getCollaborators = async projectId => {
+
     try {
         const headers = getAuthHeaders();
         if (!headers) return null;
 
-        const response = await axios.get(`${API_URL}${projectId}/collaborators/`, headers);
+        const response = await axios.get(`${API_URL}/projects/${projectId}/collaborators/`, headers);
+
         return response.data;
     } catch (error) {
         console.error("Error fetching collaborators:", error.response?.data || error.message);
