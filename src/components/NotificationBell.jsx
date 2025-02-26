@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import * as notificationService from '../services/notificationService';
+import { useEffect, useState } from "react";
+import * as notificationService from "../services/notificationService";
 
 const NotificationBell = () => {
     const [notifications, setNotifications] = useState([]);
@@ -7,15 +7,24 @@ const NotificationBell = () => {
 
     useEffect(() => {
         const loadNotifications = async () => {
-            const data = await notificationService.fetchNotifications();
-            setNotifications(data);
+            try {
+                const data = await notificationService.fetchNotifications();
+                setNotifications(data);
+            } catch (error) {
+                console.error("❌ Error fetching notifications:", error);
+                setNotifications([]);
+            }
         };
         loadNotifications();
     }, []);
 
-    const handleMarkAsRead = async id => {
-        await notificationService.markNotificationAsRead(id);
-        setNotifications(notifications.filter(n => n.id !== id));
+    const handleMarkAsRead = async (id) => {
+        try {
+            await notificationService.markNotificationAsRead(id);
+            setNotifications(prev => prev.filter(notification => notification.id !== id));
+        } catch (error) {
+            console.error("❌ Error marking notification as read:", error);
+        }
     };
 
     return (
@@ -28,9 +37,9 @@ const NotificationBell = () => {
                     {notifications.length === 0 ? (
                         <li>No notifications</li>
                     ) : (
-                        notifications.map(n => (
-                            <li key={n.id}>
-                                {n.message}
+                        notifications.map(notification => (
+                            <li key={notification.id}>
+                                {notification.message}
                                 <button onClick={() => handleMarkAsRead(n.id)}>✔</button>
                             </li>
                         ))

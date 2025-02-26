@@ -1,56 +1,77 @@
-import { Link, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import * as projectService from '../services/projectService';
-import * as collaboratorService from '../services/collaboratorService';
-import ErrorMessage from './ErrorMessage';
-import CollaboratorForm from './CollaboratorForm.jsx';
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { fetchProjectById } from "../services/projectService";
+import {
+    getCollaborators,
+    removeCollaborator,
+} from "../services/collaboratorService";
+import { useContext } from 'react';
+import AuthedUserContext from '../context/AuthedUserContext.js';
 import { jwtDecode } from "jwt-decode";
+import CollaboratorForm from "./CollaboratorForm";
+import ErrorMessage from "./ErrorMessage";
 
-
-function ProjectDetail({token}) {
+function ProjectDetail() {
     const { id } = useParams();
-    const [errorMessage, setErrorMessage] = useState('');
-    const userId = jwtDecode(token).user_id;
     const [project, setProject] = useState(null);
     const [collaborators, setCollaborators] = useState([]);
-
+    const [errorMessage, setErrorMessage] = useState("");
+    const { token } = useContext(AuthedUserContext);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const projectData = await projectService.fetchProjectById(id);
-                const collaboratorsData = await collaboratorService.getCollaborators(id);
-                setProject(projectData);
-                setCollaborators(collaboratorsData);
-            } catch (error) {
-                console.error('Error fetching project:', error);
-                setErrorMessage + ('Error fetching project:', error);
-            }
+        const loadProject = async () => {
+            const projectData = await fetchProjectById(id);
+            setProject(projectData);
         };
-        fetchData();
+
+        const loadCollaborators = async () => {
+            const collaboratorData = await getCollaborators(id);
+            setCollaborators(collaboratorData);
+        };
+
+        loadProject();
+        loadCollaborators();
     }, [id]);
 
+    const handleRemoveCollaborator = async (collaboratorId) => {
+        try {
+            const response = await removeCollaborator(collaboratorId);
+            if (response) {
+                setCollaborators((prev) => prev.filter(c => c.id !== collaboratorId));
+            }
+        } catch (error) {
+            setErrorMessage("❌ Error removing collaborator");
+        }
+    };
 
-    if (!project) return <p>Loading...</p>;
+    if (!project || !collaborators) return <p>Cargando...</p>;
+
+
+    if (!token) {
+        console.error("🚨 No token.");
+        return;
+    }
+    const user = jwtDecode(token).user_id;
 
     return (
         <div>
-            {errorMessage && <ErrorMessage message="There was a problem loading the project." />}
             <h2>{project.name}</h2>
-            <p>{project.description}</p>
 
             <h3>Collaborators</h3>
+            {errorMessage && <ErrorMessage message={errorMessage} />}
             <ul>
-                {collaborators.map(collab => (
-                    <li key={collab.id}>{collab.username} - {collab.role}</li>
+                {collaborators.map(collaborator => (
+                    <li key={collaborator.user}>
+                        {collaborator.username} - {collaborator.role}
+                        {project.owner === user && collaborator.user !== user && (
+                            <button onClick={() => handleRemoveCollaborator(collaborator.id)}>
+                                Remove
+                            </button>
+                        )}
+                    </li>
                 ))}
             </ul>
-
-            <CollaboratorForm projectId={id} userId={userId} />
-
-            <Link to={`/projects/${id}/edit`}>
-                <button>Edit Code</button>
-            </Link>
+            <CollaboratorForm projectId={id} />
         </div>
     );
 }
