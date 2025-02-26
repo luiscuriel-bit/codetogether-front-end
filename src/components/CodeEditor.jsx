@@ -6,12 +6,16 @@ import { useParams } from "react-router-dom";
 import { fetchProjectById } from "../services/projectService";
 import { getCollaborators } from "../services/collaboratorService";
 import { jwtDecode } from "jwt-decode";
+import { useContext } from 'react';
+import AuthedUserContext from '../context/AuthedUserContext.js';
 
-function CodeEditor({ initialCode = "", onChange, token }) {
+function CodeEditor() {
     const { id } = useParams();
-    const [isAuthorized, setIsAuthorized] = useState(null); 
+    const [isAuthorized, setIsAuthorized] = useState(null);
     const [code, setCode] = useState(initialCode);
     const [socket, setSocket] = useState(null);
+    const token = useContext(AuthedUserContext);
+
 
     useEffect(() => {
         const checkAccess = async () => {
@@ -23,11 +27,11 @@ function CodeEditor({ initialCode = "", onChange, token }) {
 
             try {
                 const collaborators = await getCollaborators(id);
-                const userId = jwtDecode(token).user_id;
-                const userIsCollaborator = collaborators.some(collab => collab.user_id == userId);
+                const user = jwtDecode(token).user_id;
+                const userIsCollaborator = collaborators.some(collaborator => collaborator.user == user);
                 setIsAuthorized(userIsCollaborator);
             } catch (error) {
-                console.error("Error checking access:", error);
+                console.error("Error checking access:", error.message);
                 setIsAuthorized(false);
             }
         };
@@ -36,25 +40,35 @@ function CodeEditor({ initialCode = "", onChange, token }) {
     }, [id, token]);
 
     useEffect(() => {
-        const createSocket = async () => {
-            const webSocket = new WebSocket(`ws://${import.meta.env.VITE_DJANGO_BACKEND_URL}/ws/code/${id}/`);
-            setSocket(webSocket);
 
-            webSocket.onopen = () => console.log("✅ Connected to WebSocket");
-            webSocket.onerror = (error) => console.error("❌ WebSocket error:", error);
+        const webSocket = new WebSocket(`ws://${import.meta.env.VITE_DJANGO_BACKEND_URL}/ws/code/${id}/`);
+        setSocket(webSocket);
 
-            webSocket.onmessage = (event) => {
-                setCode(event.data.code);
-            };
+        webSocket.onerror = (error) => console.error("❌ WebSocket error:", error);
+        webSocket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.message !== undefined) {
+                    setCode(data.message);
+                } else {
+                    console.warn("⚠️ WebSocket received an invalid message:", data);
+                }
+            } catch (error) {
+                console.error("❌ Error parsing message from WebSocket:", error);
+            }
+        };
+        return () => {
+            if (webSocket.readyState === WebSocket.OPEN) {
+                webSocket.close();
+            }
         };
 
-        createSocket();
     }, [id]);
 
     useEffect(() => {
         const loadProject = async () => {
             const project = await fetchProjectById(id);
-            setCode(project.description || '');
+            setCode(project.code || '');
         };
         loadProject();
     }, [id]);
@@ -63,20 +77,21 @@ function CodeEditor({ initialCode = "", onChange, token }) {
         Prism.highlightAll();
     }, [code]);
 
-    const handleChange = event => {
+    const handleChange = (event) => {
         const newCode = event.target.value;
         setCode(newCode);
-        if (socket) {
-            socket.send(JSON.stringify({ code: newCode }));
+
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ message: newCode }));
         }
     };
 
-    if (isAuthorized === null) return <p>Verificando permisos...</p>;
-    if (!isAuthorized) return <p>No tienes acceso a este proyecto.</p>;
+    if (isAuthorized === null) return <p>Verifying access...</p>;
+    if (!isAuthorized) return <p>❌ You do not have permission to edit this project. Contact the owner.</p>;
 
     return (
         <div>
-            <textarea value={code} onChange={handleChange} />
+            <textarea value={code} onChange={handleChange} aria-label="Code Editor" />
             <pre>
                 <code>{code}</code>
             </pre>

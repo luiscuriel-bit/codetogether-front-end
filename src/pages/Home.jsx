@@ -1,4 +1,4 @@
-function Home(){
+function Home() {
     return <h1>Welcome to CodeTogether</h1>;
 }
 

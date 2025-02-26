@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/api";
+const API_URL = `http://${import.meta.env.VITE_DJANGO_BACKEND_URL}/api/`;
 
 const getAuthHeaders = () => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (!token) {
         console.error("No access token found.");
-        return null;
+        return {};
     }
     return { headers: { Authorization: `Bearer ${token}` } };
 };
@@ -14,26 +14,35 @@ const getAuthHeaders = () => {
 const addCollaborator = async (userData) => {
     try {
         const headers = getAuthHeaders();
-        if (!headers) return null;
-        console.log("userData", userData)
+        if (!headers.headers) return [];
 
-        const response = await axios.post(`${API_URL}/collaborators/${userData.projectId}/add_collaborator/`, userData, headers);
+        const response = await axios.post(
+            `${API_URL}collaborators/${userData.projectId}/add_collaborator/`,
+            userData,
+            headers,
+        );
         return response.data;
     } catch (error) {
-        console.error("Error adding collaborator:", error.response?.data || error.message);
+        console.error(
+            "Error adding collaborator:",
+            error.response?.data || error.message,
+        );
         return null;
     }
 };
 
-const removeCollaborator = async (projectId, userId) => {
+const removeCollaborator = async (collaboratorId) => {
     try {
         const headers = getAuthHeaders();
         if (!headers) return null;
 
-        await axios.delete(`${API_URL}$/collaborators/${userId}/`, headers);
+        await axios.delete(`${API_URL}collaborators/${collaboratorId}/`, headers);
         return true;
     } catch (error) {
-        console.error("Error removing collaborator:", error.response?.data || error.message);
+        console.error(
+            "Error removing collaborator:",
+            error.response?.data || error.message,
+        );
         return false;
     }
 };
@@ -43,7 +52,10 @@ const getCollaborators = async projectId => {
         const headers = getAuthHeaders();
         if (!headers) return null;
 
-        const response = await axios.get(`${API_URL}/projects/${projectId}/collaborators/`, headers);
+        const response = await axios.get(
+            `${API_URL}projects/${projectId}/collaborators/`,
+            headers,
+        );
         return response.data;
     } catch (error) {
         console.error("Error fetching collaborators:", error.response?.data || error.message);
@@ -51,8 +63,4 @@ const getCollaborators = async projectId => {
     }
 };
 
-export {
-    addCollaborator,
-    removeCollaborator,
-    getCollaborators,
-}
+export { addCollaborator, removeCollaborator, getCollaborators };
