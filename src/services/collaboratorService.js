@@ -36,7 +36,7 @@ const removeCollaborator = async (collaboratorId) => {
         const headers = getAuthHeaders();
         if (!headers) return null;
 
-        await axios.delete(`${API_URL}collaborators/${collaboratorId}/`, headers);
+        await axios.delete(`${API_URL}collaborators/${collaboratorId}/remove_collaborator/`, headers);
         return true;
     } catch (error) {
         console.error(

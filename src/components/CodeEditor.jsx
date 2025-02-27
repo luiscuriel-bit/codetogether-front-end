@@ -10,7 +10,8 @@ import AuthedUserContext from '../context/AuthedUserContext.js';
 
 function CodeEditor() {
     const { id } = useParams();
-    const [isAuthorized, setIsAuthorized] = useState(null);
+    const [isViewer, setIsViewer] = useState(null);
+    const [isEditor, setIsEditor] = useState(null);
     const [code, setCode] = useState('');
     const [socket, setSocket] = useState(null);
     const token = useContext(AuthedUserContext);
@@ -20,18 +21,25 @@ function CodeEditor() {
         const checkAccess = async () => {
             if (!token) {
                 console.error("🚨 No token.");
-                setIsAuthorized(false);
+                setIsViewer(false);
                 return;
             }
 
             try {
                 const collaborators = await getCollaborators(id);
                 const user = jwtDecode(token).user_id;
-                const userIsCollaborator = collaborators.some(collaborator => collaborator.user == user);
-                setIsAuthorized(userIsCollaborator);
+                const collaborator = collaborators.find(collaborator => collaborator.user === user);
+                console.log(collaborator)
+                if (collaborator) {
+                    setIsViewer(true);
+                    setIsEditor(collaborator.role === 'admin');
+                } else {
+                    setIsViewer(false);
+                }
+
             } catch (error) {
                 console.error("Error checking access:", error.message);
-                setIsAuthorized(false);
+                setIsViewer(false);
             }
         };
 
@@ -39,8 +47,7 @@ function CodeEditor() {
     }, [id, token]);
 
     useEffect(() => {
-
-        const webSocket = new WebSocket(`${import.meta.env.VITE_DJANGO_WEBSOCKET_URL}${id}/`);
+        const webSocket = new WebSocket(`${import.meta.env.VITE_DJANGO_WEBSOCKET_URL}${id}/?token=${token}`);
         setSocket(webSocket);
 
         webSocket.onerror = (error) => console.error("❌ WebSocket error:", error);
@@ -57,7 +64,7 @@ function CodeEditor() {
             }
         };
         return () => {
-            if (webSocket.readyState === WebSocket.OPEN) {
+            if (webSocket.readyState === WebSocket.OPEN && isEditor) {
                 webSocket.close();
             }
         };
@@ -73,20 +80,17 @@ function CodeEditor() {
         const newCode = event.target.value;
         setCode(newCode);
 
-        if (socket && socket.readyState === WebSocket.OPEN) {
+        if (socket && socket.readyState === WebSocket.OPEN && isEditor) {
             socket.send(JSON.stringify({ message: newCode }));
         }
     };
 
-    if (isAuthorized === null) return <p>Verifying access...</p>;
-    if (!isAuthorized) return <p>❌ You do not have permission to edit this project. Contact the owner.</p>;
+    if (isViewer === null) return <p>Verifying access...</p>;
+    if (!isViewer) return <p>❌ You do not have permission to edit this project. Contact the owner.</p>;
 
     return (
         <div>
-            <textarea value={code} onChange={handleChange} aria-label="Code Editor" />
-            <pre>
-                <code>{code}</code>
-            </pre>
+            <textarea value={code} onChange={handleChange} aria-label="Code Editor" readOnly={!isEditor} />
         </div>
     );
 }

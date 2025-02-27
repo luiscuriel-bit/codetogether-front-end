@@ -16,6 +16,8 @@ const NotificationBell = () => {
             }
         };
         loadNotifications();
+        const interval = setInterval(loadNotifications, 5000);
+        return () => clearInterval(interval);
     }, []);
 
     const handleMarkAsRead = async (id) => {
@@ -40,7 +42,7 @@ const NotificationBell = () => {
                         notifications.map(notification => (
                             <li key={notification.id}>
                                 {notification.message}
-                                <button onClick={() => handleMarkAsRead(n.id)}>✔</button>
+                                <button onClick={() => handleMarkAsRead(notification.id)}>✔</button>
                             </li>
                         ))
                     )}
