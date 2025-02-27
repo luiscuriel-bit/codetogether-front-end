@@ -33,14 +33,14 @@ function ProjectDetail() {
         loadCollaborators();
     }, [id]);
 
-    const handleRemoveCollaborator = async (collaboratorId) => {
+    const handleRemoveCollaborator = async collaboratorId => {
         try {
             const response = await removeCollaborator(collaboratorId);
             if (response) {
-                setCollaborators((prev) => prev.filter(c => c.id !== collaboratorId));
+                setCollaborators((prev) => prev.filter(collaborator => collaborator.id !== collaboratorId));
             }
         } catch (error) {
-            setErrorMessage("❌ Error removing collaborator");
+            setErrorMessage("❌ Error removing collaborator:", error.message);
         }
     };
 

@@ -29,12 +29,12 @@ function Login({ setToken }) {
             const userData = await login(form);
             if (userData) {
                 setToken(userData);
-                // navigate("/projects");
+                navigate("/projects");
             } else {
                 setErrorMessage("Wrong credentials");
             }
         } catch (error) {
-            setErrorMessage(error.message);
+            setErrorMessage("Error logging in:", error.message);
         } finally {
             setIsSubmitting(false);
         }
