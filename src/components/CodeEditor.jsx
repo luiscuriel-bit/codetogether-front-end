@@ -3,7 +3,6 @@ import Prism from "prismjs";
 import "prismjs/components/prism-javascript";
 import "prismjs/themes/prism.css";
 import { useParams } from "react-router-dom";
-import { fetchProjectById } from "../services/projectService";
 import { getCollaborators } from "../services/collaboratorService";
 import { jwtDecode } from "jwt-decode";
 import { useContext } from 'react';
@@ -12,7 +11,7 @@ import AuthedUserContext from '../context/AuthedUserContext.js';
 function CodeEditor() {
     const { id } = useParams();
     const [isAuthorized, setIsAuthorized] = useState(null);
-    const [code, setCode] = useState(initialCode);
+    const [code, setCode] = useState('');
     const [socket, setSocket] = useState(null);
     const token = useContext(AuthedUserContext);
 
@@ -65,13 +64,6 @@ function CodeEditor() {
 
     }, [id]);
 
-    useEffect(() => {
-        const loadProject = async () => {
-            const project = await fetchProjectById(id);
-            setCode(project.code || '');
-        };
-        loadProject();
-    }, [id]);
 
     useEffect(() => {
         Prism.highlightAll();

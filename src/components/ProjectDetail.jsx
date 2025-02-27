@@ -16,7 +16,7 @@ function ProjectDetail() {
     const [project, setProject] = useState(null);
     const [collaborators, setCollaborators] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
-    const { token } = useContext(AuthedUserContext);
+    const token = useContext(AuthedUserContext);
 
     useEffect(() => {
         const loadProject = async () => {
