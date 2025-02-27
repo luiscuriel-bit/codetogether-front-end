@@ -18,7 +18,7 @@ axios.interceptors.response.use(
     }
 );
 
-const API_URL = `http://${import.meta.env.VITE_DJANGO_BACKEND_URL}/api`;
+const API_URL = `${import.meta.env.VITE_DJANGO_API_URL}`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem("access_token");
@@ -31,7 +31,7 @@ const getAuthHeaders = () => {
 
 const login = async credentials => {
     try {
-        const response = await axios.post(`${API_URL}/token/`, credentials);
+        const response = await axios.post(`${API_URL}token/`, credentials);
         localStorage.setItem("access_token", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
         return response.data;
@@ -45,7 +45,7 @@ const refreshToken = async () => {
     const refresh = localStorage.getItem("refresh_token");
     if (!refresh) return null;
     try {
-        const response = await axios.post(`${API_URL}/token/refresh/`, { refresh });
+        const response = await axios.post(`${API_URL}token/refresh/`, { refresh });
         localStorage.setItem('access_token', response.data.access);
         return response.data.access;
     } catch (error) {
@@ -58,7 +58,7 @@ const refreshToken = async () => {
 
 const signup = async formData => {
     try {
-        const response = await axios.post(`${API_URL}/users/`, formData);
+        const response = await axios.post(`${API_URL}users/`, formData);
         localStorage.setItem('access_token', response.data.access);
         localStorage.setItem('refresh_token', response.data.refresh);
 
@@ -81,7 +81,7 @@ const getUser = async userId => {
         if (!headers.headers) return null;
 
         const response = await axios.get(
-            `${API_URL}/users/${userId}/`,
+            `${API_URL}users/${userId}/`,
             headers,
         );
         return response.data;
@@ -100,7 +100,7 @@ const updateUser = async (userId, updatedData) => {
         if (!headers.headers) return null;
 
         const updatedUser = await axios.patch(
-            `${API_URL}/users/${userId}/`,
+            `${API_URL}users/${userId}/`,
             updatedData,
             headers,
         );

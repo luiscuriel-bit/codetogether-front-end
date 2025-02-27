@@ -3,7 +3,7 @@ import { addCollaborator } from "../services/collaboratorService";
 import ErrorMessage from "./ErrorMessage";
 
 function CollaboratorForm({ projectId }) {
-    const [form, setForm] = useState({ user: '', role: '' });
+    const [form, setForm] = useState({ user: '', role: 'viewer' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -12,7 +12,7 @@ function CollaboratorForm({ projectId }) {
         setIsSubmitting(true);
         try {
             await addCollaborator({ projectId, ...form });
-            setForm({ user: '', role: '' });
+            setForm({ user: '', role: 'viewer' });
         } catch (error) {
             setErrorMessage(`Error adding collaborator: ${error.message}`);
         } finally {

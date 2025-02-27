@@ -40,7 +40,7 @@ function CodeEditor() {
 
     useEffect(() => {
 
-        const webSocket = new WebSocket(`ws://${import.meta.env.VITE_DJANGO_BACKEND_URL}/ws/code/${id}/`);
+        const webSocket = new WebSocket(`${import.meta.env.VITE_DJANGO_WEBSOCKET_URL}${id}/`);
         setSocket(webSocket);
 
         webSocket.onerror = (error) => console.error("❌ WebSocket error:", error);

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = `http://${import.meta.env.VITE_DJANGO_BACKEND_URL}/api/notifications/`;
+const API_URL = `${import.meta.env.VITE_DJANGO_API_URL}notifications/`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem("access_token");

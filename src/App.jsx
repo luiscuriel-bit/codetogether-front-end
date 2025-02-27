@@ -11,23 +11,10 @@ import ProjectDetail from "./components/ProjectDetail";
 import NavBar from "./components/NavBar";
 import CodeEditor from "./components/CodeEditor";
 
-
 function App() {
     const navigate = useNavigate();
     const [token, setToken] = useState(localStorage.getItem("access_token"));
     const [projects, setProjects] = useState([]);
-
-    useEffect(() => {
-        const fetch = async () => {
-            try {
-                const projectsData = await projectService.fetchProjects();
-                setProjects(projectsData);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetch();
-    }, []);
 
     useEffect(() => {
         const fetchUserProjects = async () => {
@@ -44,7 +31,7 @@ function App() {
     const handleLogout = () => {
         authService.logout();
         setToken(null);
-        navigate("/");
+        navigate("");
     };
     return (
         <>

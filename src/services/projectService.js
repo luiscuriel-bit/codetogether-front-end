@@ -1,7 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const API_URL = `http://${import.meta.env.VITE_DJANGO_BACKEND_URL}/api/`;
+const API_URL = `${import.meta.env.VITE_DJANGO_API_URL}`;
 
 const token = localStorage.getItem("access_token");
 const userId = token ? jwtDecode(token).user_id : null;
