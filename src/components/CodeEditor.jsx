@@ -80,14 +80,21 @@ function CodeEditor() {
     if (!isViewer) return <p>❌ You do not have permission to edit this project. Contact the owner.</p>;
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4">
-            <div className="max-w-4xl mx-auto">
-                <h2 className="text-xl font-bold mb-4">Code Editor</h2>
+        <div className="h-screen bg-gray-900 text-gray-100 pt-22">
+            <div className="max-w-7xl mx-auto px-4 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-mono font-semibold">Editor: {id}</h2>
+                    <span className="px-3 py-1 bg-indigo-600 rounded-full text-sm">
+                        {isEditor ? "Admin" : "Viewer"}
+                    </span>
+                </div>
+                
                 <textarea
                     value={code}
                     onChange={handleChange}
                     readOnly={!isEditor}
-                    className="w-full h-96 p-4 border rounded font-mono bg-white"
+                    className="w-full flex-1 font-mono text-sm bg-gray-800 p-6 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 border-none mb-15"
+                    style={{ tabSize: 4 }}
                 />
             </div>
         </div>
