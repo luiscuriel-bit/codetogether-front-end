@@ -10,6 +10,8 @@ import ProjectDetail from "./components/ProjectDetail";
 import NavBar from "./components/NavBar";
 import CodeEditor from "./components/CodeEditor";
 import Dashboard from "./pages/Dashboard.jsx";
+import Profile from "./pages/Profile.jsx";
+import EditProfile from "./pages/EditProfile.jsx";
 
 function App() {
     const navigate = useNavigate();
@@ -50,6 +52,14 @@ function App() {
                             <Route
                                 path="/projects/:id/edit"
                                 element={<CodeEditor />}
+                            />
+                            <Route
+                                path="/profile"
+                                element={<Profile />}
+                            />
+                            <Route
+                                path="/profile/edit"
+                                element={<EditProfile />}
                             />
                         </>
                     ) : (
