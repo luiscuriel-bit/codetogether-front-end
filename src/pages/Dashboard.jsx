@@ -31,7 +31,7 @@ function Dashboard({ projects }) {
                         Welcome Back, {userData?.first_name}!
                     </h1>
                     <p className="text-xl text-gray-600">
-                        Your Profile: Connect and Collaborate Effectively
+                        Connect and Collaborate Effectively
                     </p>
                 </div>
 

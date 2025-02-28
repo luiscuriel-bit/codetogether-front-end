@@ -17,14 +17,20 @@ function NavBar({ handleLogout }) {
                     </Link>
 
                     <div className="hidden md:flex items-center space-x-8">
-                        {token && (
+                        {token && <>
                             <Link
                                 to="/"
                                 className={`hover:text-indigo-500 transition-colors ${token ? "text-gray-600" : "text-white"}`}
                             >
                                 Dashboard
                             </Link>
-                        )}
+                            <Link
+                                to="/profile"
+                                className={`hover:text-indigo-500 transition-colors ${token ? "text-gray-600" : "text-white"}`}
+                            >
+                                Profile
+                            </Link>
+                        </>}
                     </div>
 
                     <div className="flex items-center space-x-4">
@@ -55,7 +61,7 @@ function NavBar({ handleLogout }) {
                     </div>
                 </div>
             </div>
-        </nav>
+        </nav >
     );
 
 }
