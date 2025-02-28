@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 function Home() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-            <section className="min-h-screen pt-24 flex items-center">
+        <div className="min-h-screen bg-gradient-to-b pt-` from-gray-900 to-gray-800 text-white">
+            <section className="min-h-screen flex items-center">
                 <div className="container mx-auto px-6 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in">
                         Collaborate in Real-Time, <span className="text-indigo-400">Code Together</span> Effortlessly
@@ -69,7 +69,6 @@ function Home() {
                     <div className="space-x-6 mb-6">
                         <Link to="/about" className="hover:text-indigo-400">About Us</Link>
                         <Link to="/contact" className="hover:text-indigo-400">Contact</Link>
-                        <Link to="/support" className="hover:text-indigo-400">Support</Link>
                     </div>
                     <p className="text-gray-400">&copy; {new Date().getFullYear()} CodeTogether. All rights reserved.</p>
                 </div>

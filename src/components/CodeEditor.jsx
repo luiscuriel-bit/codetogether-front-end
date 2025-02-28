@@ -15,36 +15,27 @@ function CodeEditor() {
     const [code, setCode] = useState('');
     const [socket, setSocket] = useState(null);
     const token = useContext(AuthedUserContext);
-
+    const user = jwtDecode(token).user_id;
 
     useEffect(() => {
         const checkAccess = async () => {
-            if (!token) {
-                console.error("🚨 No token.");
-                setIsViewer(false);
-                return;
-            }
-
             try {
                 const collaborators = await getCollaborators(id);
-                const user = jwtDecode(token).user_id;
                 const collaborator = collaborators.find(collaborator => collaborator.user === user);
-                console.log(collaborator)
                 if (collaborator) {
                     setIsViewer(true);
                     setIsEditor(collaborator.role === 'admin');
                 } else {
                     setIsViewer(false);
                 }
-
             } catch (error) {
                 console.error("Error checking access:", error.message);
                 setIsViewer(false);
             }
         };
 
-        checkAccess();
-    }, [id, token]);
+        if (token) checkAccess();
+    }, [id, token, user]);
 
     useEffect(() => {
         const webSocket = new WebSocket(`${import.meta.env.VITE_DJANGO_WEBSOCKET_URL}${id}/?token=${token}`);
@@ -89,8 +80,16 @@ function CodeEditor() {
     if (!isViewer) return <p>❌ You do not have permission to edit this project. Contact the owner.</p>;
 
     return (
-        <div>
-            <textarea value={code} onChange={handleChange} aria-label="Code Editor" readOnly={!isEditor} />
+        <div className="min-h-screen bg-gray-50 p-4">
+            <div className="max-w-4xl mx-auto">
+                <h2 className="text-xl font-bold mb-4">Code Editor</h2>
+                <textarea
+                    value={code}
+                    onChange={handleChange}
+                    readOnly={!isEditor}
+                    className="w-full h-96 p-4 border rounded font-mono bg-white"
+                />
+            </div>
         </div>
     );
 }

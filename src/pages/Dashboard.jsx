@@ -1,92 +1,3 @@
-// import { useContext, useEffect, useState } from 'react';
-// import { Link } from 'react-router-dom';
-// import AuthedUserContext from '../context/AuthedUserContext';
-// import { getUser } from '../services/authService';
-
-// function Dashboard({ projects }) {
-//     const token = useContext(AuthedUserContext);
-//     const [userData, setUserData] = useState(null);
-//     const [errorMessage, setErrorMessage] = useState("");
-
-//     useEffect(() => {
-//         const fetchUserData = async () => {
-//             try {
-//                 const user = await getUser();
-//                 setUserData(user);
-//             } catch (error) {
-//                 setErrorMessage(`Error: ${error.message}`);
-//             }
-//         };
-//         if (token) fetchUserData();
-//     }, [token]);
-
-//     return (
-//         <div className="min-h-screen bg-gray-50">
-
-//             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-//                 <div className="mb-10">
-//                     <h1 className="text-3xl font-bold text-gray-900 mb-2">
-//                         Welcome Back, {userData?.first_name}!
-//                     </h1>
-//                     <p className="text-gray-600">Your Profile: Connect and Collaborate Effectively</p>
-//                 </div>
-
-//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-//                     <div className="bg-white p-6 rounded-xl shadow-sm">
-//                         <h3 className="text-lg font-semibold text-gray-900 mb-2">Active Projects</h3>
-//                         <p className="text-3xl font-bold text-indigo-600">{projects.length}</p>
-//                     </div>
-//                 </div>
-
-//                 <div className="bg-white rounded-xl shadow-sm p-6">
-//                     <div className="flex justify-between items-center mb-6">
-//                         <h2 className="text-2xl font-bold text-gray-900">Your active projects</h2>
-//                         <p className="text-1xl font-bold text-indigo-600">Collaborate and innovate with your coding projects.</p>
-
-//                         <Link
-//                             to="/projects/new"
-//                             className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
-//                         >
-//                             New Project
-//                         </Link>
-//                     </div>
-
-//                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//                         {projects.map(project => (
-//                             <div 
-//                             key={project.id}
-//                             className="bg-white p-4 rounded shadow-sm"
-//                         >
-//                             <h3 className="text-lg font-medium">{project.name}</h3>
-//                             <Link 
-//                                 to={`/projects/${project.id}`}
-//                                 className="text-blue-500 hover:text-blue-600"
-//                             >
-//                                 Open Project
-//                             </Link>
-//                         </div>
-//                         ))}
-
-//                         {projects.length === 0 && (
-//                             <div className="col-span-full text-center py-12">
-//                                 <p className="text-gray-500 mb-4">No projects yet</p>
-//                                 <Link
-//                                     to="/projects/new"
-//                                     className="text-indigo-600 hover:text-indigo-700 font-medium"
-//                                 >
-//                                     Create your first project →
-//                                 </Link>
-//                             </div>
-//                         )}
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
-
-// export default Dashboard;
-
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthedUserContext from '../context/AuthedUserContext';
@@ -112,7 +23,7 @@ function Dashboard({ projects }) {
 
     return (
 
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 pt-12" >
             {errorMessage && <ErrorMessage message={errorMessage} />}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
                 <div className="space-y-4">
