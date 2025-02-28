@@ -88,9 +88,29 @@ function CodeEditor() {
     if (isViewer === null) return <p>Verifying access...</p>;
     if (!isViewer) return <p>❌ You do not have permission to edit this project. Contact the owner.</p>;
 
+    // return (
+    //     <div>
+    //         <textarea value={code} onChange={handleChange} aria-label="Code Editor" readOnly={!isEditor} />
+    //     </div>
+    // );
     return (
-        <div>
-            <textarea value={code} onChange={handleChange} aria-label="Code Editor" readOnly={!isEditor} />
+        <div className="h-screen bg-gray-900 text-gray-100 pt-16">
+            <div className="max-w-7xl mx-auto px-4 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-mono font-semibold">Editor: {id}</h2>
+                    <span className="px-3 py-1 bg-indigo-600 rounded-full text-sm">
+                        {isEditor ? "Admin" : "Viewer"}
+                    </span>
+                </div>
+
+                <textarea
+                    value={code}
+                    onChange={handleChange}
+                    readOnly={!isEditor}
+                    className="w-full h-full font-mono text-sm bg-gray-800 p-6 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 border-none"
+                    style={{ tabSize: 4 }}
+                />
+            </div>
         </div>
     );
 }
