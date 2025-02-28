@@ -31,7 +31,7 @@
 
 ### Frontend  
 - React.js  
-- Tailwind CSS  # CodeTogether
+- Tailwind CSS
 
 ![CodeTogether Screenshot](https://your-screenshot-url.com)  
 
