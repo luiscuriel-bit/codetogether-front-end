@@ -49,7 +49,7 @@ function ProjectDetail() {
     }, [id, token, user, collaborators]);
 
 
-    if (!project) return <p>Loading...</p>;
+    if (!project || !currentCollaborator) return <p>Loading...</p>;
 
 
     if (!token) {

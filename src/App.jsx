@@ -12,6 +12,7 @@ import CodeEditor from "./components/CodeEditor";
 import Dashboard from "./pages/Dashboard.jsx";
 import Profile from "./pages/Profile.jsx";
 import EditProfile from "./pages/EditProfile.jsx";
+import Features from "./pages/Features.jsx";
 
 function App() {
     const navigate = useNavigate();
@@ -69,6 +70,7 @@ function App() {
                             <Route path="/signup" element={<AuthForm setToken={setToken} isLogin={false} />} />
                         </>
                     )}
+                    <Route path="/features" element={<Features />} />
                 </Routes>
             </AuthedUserContext.Provider>
         </>

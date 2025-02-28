@@ -28,6 +28,7 @@ function Home() {
                 </div>
             </section>
 
+
             <section className="min-h-screen bg-gray-800 flex items-center py-20">
                 <div className="container mx-auto px-6">
                     <h2 className="text-3xl font-bold text-center mb-12">Unlock the Power of Real-Time Collaboration</h2>
@@ -42,16 +43,17 @@ function Home() {
                         </div>
                         <div className="bg-gray-700 p-6 rounded-lg">
                             <h3 className="text-xl font-semibold mb-4">Integrated</h3>
-                            <p className="text-gray-300">Connect directly to GitHub for easy and efficient project management.</p>
+                            <p className="text-gray-300">Connect directly with your team easy and efficient project management.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
+
             <div className="py-20">
                 <div className="container mx-auto px-6 text-center">
                     <h2 className="text-3xl font-bold mb-6">Start Collaborating Effortlessly Today</h2>
-                    <p className="text-xl text-gray-300 mb-8">Experience seamless coding collaboration with a free trial of CodeTogether. Join us and elevate your projects!</p>
+                    <p className="text-xl text-gray-300 mb-8">Experience seamless coding collaboration with CodeTogether. Join us and elevate your projects!</p>
                     <Link
                         to="/signup"
                         className="bg-indigo-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-indigo-700 transition-colors"
@@ -61,15 +63,13 @@ function Home() {
                 </div>
             </div>
 
+
             <footer className="bg-gray-900 py-10 mt-20">
                 <div className="container mx-auto px-6 text-center">
                     <div className="text-2xl font-bold mb-4">
                         <span className="text-indigo-400">Code</span>Together
                     </div>
-                    <div className="space-x-6 mb-6">
-                        <Link to="/about" className="hover:text-indigo-400">About Us</Link>
-                        <Link to="/contact" className="hover:text-indigo-400">Contact</Link>
-                    </div>
+
                     <p className="text-gray-400">&copy; {new Date().getFullYear()} CodeTogether. All rights reserved.</p>
                 </div>
             </footer>
