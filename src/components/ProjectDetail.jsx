@@ -46,7 +46,7 @@ function ProjectDetail() {
         if (token) {
             fetchCollaborators();
         }
-    }, [id, token, user, collaborators]);
+    }, [id, token, user]);
 
 
     if (!project || !currentCollaborator) return <p>Loading...</p>;

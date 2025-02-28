@@ -21,6 +21,8 @@ function Dashboard({ projects }) {
         if (token) fetchUserData();
     }, [token]);
 
+    if (!userData) return <p>Loading...</p>;
+
     return (
 
         <div className="min-h-screen bg-gray-50 pt-12" >
