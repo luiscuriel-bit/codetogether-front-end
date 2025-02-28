@@ -22,7 +22,6 @@ function CollaboratorList({ collaborators, setCollaborators, owner }) {
 
     return (
         <div className="mt-4">
-            <h4 className="font-medium mb-2">Current Collaborators:</h4>
             {errorMessage && <ErrorMessage message={errorMessage} />}
             <ul className="space-y-2">
                 {collaborators.map(collaborator => (
