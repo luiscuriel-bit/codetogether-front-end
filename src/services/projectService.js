@@ -3,9 +3,6 @@ import { jwtDecode } from "jwt-decode";
 
 const API_URL = `${import.meta.env.VITE_DJANGO_API_URL}`;
 
-const token = localStorage.getItem("access_token");
-const userId = token ? jwtDecode(token).user_id : null;
-
 const getAuthHeaders = () => {
     const token = localStorage.getItem("access_token");
     if (!token) {
@@ -61,6 +58,8 @@ const getProjectName = async id => {
 };
 
 const createProject = async projectData => {
+    const token = localStorage.getItem("access_token");
+    const userId = token ? jwtDecode(token).user_id : null;
     try {
         const headers = getAuthHeaders();
         if (!headers.headers) return null;

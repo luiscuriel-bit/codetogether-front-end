@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-const token = localStorage.getItem("access_token");
-const userId = token ? jwtDecode(token).user_id : null;
-
 axios.interceptors.response.use(
     response => response,
     async error => {
@@ -15,7 +12,7 @@ axios.interceptors.response.use(
             const newToken = await refreshToken();
             if (newToken) {
                 originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-                return axios(originalRequest);  
+                return axios(originalRequest);
             }
         }
         return Promise.reject(error);
@@ -30,7 +27,7 @@ const getAuthHeaders = () => {
         console.error('No access token found.');
         return {};
     }
-    return { headers: { Authorization: `Bearer ${token}` }};
+    return { headers: { Authorization: `Bearer ${token}` } };
 };
 
 const login = async credentials => {
@@ -80,6 +77,8 @@ const logout = () => {
 };
 
 const getUser = async () => {
+    const token = localStorage.getItem("access_token");
+    const userId = token ? jwtDecode(token).user_id : null;
     try {
         const headers = getAuthHeaders();
         if (!headers.headers) return null;
@@ -99,6 +98,8 @@ const getUser = async () => {
 };
 
 const updateUser = async updatedData => {
+    const token = localStorage.getItem("access_token");
+    const userId = token ? jwtDecode(token).user_id : null;
     try {
         const headers = getAuthHeaders();
         if (!headers.headers) return null;
