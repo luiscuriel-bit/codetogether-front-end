@@ -1,7 +1,6 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
-import Login from "./pages/Login";
+import AuthForm from "./pages/AuthForm";
 import Home from "./pages/Home";
-import Projects from "./pages/Projects";
 import ProjectForm from "./components/ProjectForm";
 import * as projectService from "./services/projectService";
 import * as authService from "./services/authService";
@@ -10,6 +9,9 @@ import AuthedUserContext from "./context/AuthedUserContext.js";
 import ProjectDetail from "./components/ProjectDetail";
 import NavBar from "./components/NavBar";
 import CodeEditor from "./components/CodeEditor";
+import Dashboard from "./pages/Dashboard.jsx";
+import Profile from "./pages/Profile.jsx";
+import EditProfile from "./pages/EditProfile.jsx";
 
 function App() {
     const navigate = useNavigate();
@@ -33,14 +35,15 @@ function App() {
         setToken(null);
         navigate("");
     };
+
     return (
         <>
             <AuthedUserContext.Provider value={token}>
-                {token && <NavBar handleLogout={handleLogout} />}
+                <NavBar handleLogout={handleLogout} />
                 <Routes>
                     {token ? (
                         <>
-                            <Route path="/projects" element={<Projects projects={projects} />} />
+                            <Route path="/" element={<Dashboard projects={projects} />} />
                             <Route path="/projects/new" element={<ProjectForm />} />
                             <Route
                                 path="/projects/:id"
@@ -50,11 +53,22 @@ function App() {
                                 path="/projects/:id/edit"
                                 element={<CodeEditor />}
                             />
+                            <Route
+                                path="/profile"
+                                element={<Profile />}
+                            />
+                            <Route
+                                path="/profile/edit"
+                                element={<EditProfile />}
+                            />
                         </>
                     ) : (
-                        <Route path="/login" element={<Login setToken={setToken} />} />
+                        <>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/login" element={<AuthForm setToken={setToken} isLogin={true} />} />
+                            <Route path="/signup" element={<AuthForm setToken={setToken} isLogin={false} />} />
+                        </>
                     )}
-                    <Route path="/" element={<Home />} />
                 </Routes>
             </AuthedUserContext.Provider>
         </>

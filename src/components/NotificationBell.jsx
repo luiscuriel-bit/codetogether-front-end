@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as notificationService from "../services/notificationService";
 
-const NotificationBell = () => {
+function NotificationBell() {
     const [notifications, setNotifications] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -30,23 +30,42 @@ const NotificationBell = () => {
     };
 
     return (
-        <div>
-            <button onClick={() => setShowDropdown(!showDropdown)}>
-                🔔 {notifications.length > 0 && <span>({notifications.length})</span>}
+        <div className="relative">
+            <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="relative p-2 hover:bg-gray-100 rounded"
+            >
+                🔔
+                {notifications.length > 0 && (
+                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 rounded-full">
+                        {notifications.length}
+                    </span>
+                )}
             </button>
+
             {showDropdown && (
-                <ul>
-                    {notifications.length === 0 ? (
-                        <li>No notifications</li>
-                    ) : (
-                        notifications.map(notification => (
-                            <li key={notification.id}>
-                                {notification.message}
-                                <button onClick={() => handleMarkAsRead(notification.id)}>✔</button>
-                            </li>
-                        ))
-                    )}
-                </ul>
+                <div className="absolute right-0 mt-2 w-64 bg-white border rounded shadow-lg">
+                    <div className="p-2 max-h-60 overflow-y-auto">
+                        {notifications.length === 0 ? (
+                            <div className="p-2 text-gray-500">No notifications</div>
+                        ) : (
+                            notifications.map(notification => (
+                                <div
+                                    key={notification.id}
+                                    className="p-2 hover:bg-gray-50 flex justify-between items-center"
+                                >
+                                    <span>{notification.message}</span>
+                                    <button
+                                        onClick={() => handleMarkAsRead(notification.id)}
+                                        className="text-green-500 hover:text-green-600"
+                                    >
+                                        ✓
+                                    </button>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
             )}
         </div>
     );
