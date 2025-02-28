@@ -1,4 +1,8 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+
+const token = localStorage.getItem("access_token");
+const userId = token ? jwtDecode(token).user_id : null;
 
 axios.interceptors.response.use(
     response => response,
@@ -34,7 +38,7 @@ const login = async credentials => {
         const response = await axios.post(`${API_URL}token/`, credentials);
         localStorage.setItem("access_token", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
-        return response.data;
+        return response.data.access;
     } catch (error) {
         console.error("Error logging in:", error.response?.data || error.message);
         throw new Error(error.response?.data?.detail || "Login failed");
@@ -62,7 +66,7 @@ const signup = async formData => {
         localStorage.setItem('access_token', response.data.access);
         localStorage.setItem('refresh_token', response.data.refresh);
 
-        return response.data;
+        return response.data.access;
     } catch (error) {
         console.error('Error signing up:', error.response?.data || error.message);
         throw new Error(error.response?.data?.detail || 'Signup failed');
@@ -75,7 +79,7 @@ const logout = () => {
     localStorage.removeItem('refresh_token');
 };
 
-const getUser = async userId => {
+const getUser = async () => {
     try {
         const headers = getAuthHeaders();
         if (!headers.headers) return null;
@@ -94,7 +98,7 @@ const getUser = async userId => {
     }
 };
 
-const updateUser = async (userId, updatedData) => {
+const updateUser = async updatedData => {
     try {
         const headers = getAuthHeaders();
         if (!headers.headers) return null;
