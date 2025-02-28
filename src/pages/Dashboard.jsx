@@ -28,7 +28,7 @@ function Dashboard({ projects }) {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
                 <div className="space-y-4">
                     <h1 className="text-4xl font-bold text-gray-900">
-                        Welcome Back, {userData?.first_name}!
+                        Welcome Back{`${userData?.first_name ? `, ${userData.first_name}` : ''}`}!
                     </h1>
                     <p className="text-xl text-gray-600">
                         Connect and Collaborate Effectively
@@ -59,7 +59,6 @@ function Dashboard({ projects }) {
                         </Link>
                     </div>
 
-                    {/* Lista de proyectos */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {projects.map(project => (
                             <div
@@ -72,9 +71,6 @@ function Dashboard({ projects }) {
                                     className="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-2"
                                 >
                                     Open Project
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
                                 </Link>
                             </div>
                         ))}
@@ -88,9 +84,6 @@ function Dashboard({ projects }) {
                                     className="text-indigo-600 hover:text-indigo-700 font-medium text-lg flex items-center gap-2"
                                 >
                                     Start your first project
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
                                 </Link>
                             </div>
                         )}
