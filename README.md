@@ -33,8 +33,6 @@
 - React.js  
 - Tailwind CSS
 
-![CodeTogether Screenshot](https://your-screenshot-url.com)  
-
 ## Description  
 
 **CodeTogether** is a real-time collaborative code editor that allows multiple users to work on the same project simultaneously. It provides seamless synchronization through WebSockets and a structured user authentication system. This application was built to facilitate pair programming, collaborative coding sessions, and real-time project management.  
